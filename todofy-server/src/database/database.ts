@@ -8,10 +8,14 @@ import { ConnectionOptions } from 'typeorm';
 export const databaseOptions = async () => {
   let connOptions: ConnectionOptions;
   connOptions = {
-    type: 'mongodb',
+    name: 'todofy-db',
+    type: 'postgres',
+    host: 'localhost',
+    username: 'faust',
+    password: '4532164mine',
+    logging: true,
+    synchronize: true,
     database: 'todofy',
-    port: 27017,
-    host: __prod__ ? '' : 'localhost',
   };
 
   return connOptions;

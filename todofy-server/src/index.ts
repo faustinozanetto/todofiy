@@ -12,47 +12,43 @@ import { createConnection } from 'typeorm';
 const logger = new Logger('Todofy | ');
 
 const main = async () => {
-  try {
-    const options = await databaseOptions();
-    const connection = await createConnection(options);
+  const options = await databaseOptions();
+  const connection = await createConnection(options);
 
+  logger.log(
+    LogLevel.INFO,
+    'Successfully connected to database: ' + connection.name
+  );
+
+  const app = express();
+  app.use(
+    cors({
+      origin: __prod__ ? '' : 'http://localhost:3000',
+      credentials: true,
+    })
+  );
+
+  const apolloServer = new ApolloServer({
+    schema: await buildSchema({
+      resolvers: [TestResolver],
+      validate: false,
+    }),
+    introspection: true,
+    playground: true,
+    context: ({ req, res }) => ({ req, res }),
+  });
+
+  apolloServer.applyMiddleware({
+    app,
+    cors: false,
+  });
+
+  app.listen(__prod__ ? __port__ : 5000, () => {
     logger.log(
       LogLevel.INFO,
-      'Successfully connected to database: ' + connection.name
+      'Successfully started Todofy Server on port ' + __port__
     );
-
-    const app = express();
-    app.use(
-      cors({
-        origin: __prod__ ? '' : 'http://localhost:3000',
-        credentials: true,
-      })
-    );
-
-    const apolloServer = new ApolloServer({
-      schema: await buildSchema({
-        resolvers: [TestResolver],
-        validate: false,
-      }),
-      introspection: true,
-      playground: true,
-      context: ({ req, res }) => ({ req, res }),
-    });
-
-    apolloServer.applyMiddleware({
-      app,
-      cors: false,
-    });
-
-    app.listen(__prod__ ? __port__ : 5000, () => {
-      logger.log(
-        LogLevel.INFO,
-        'Successfully started Todofy Server on port ' + __port__
-      );
-    });
-  } catch (error) {
-    return error;
-  }
+  });
 };
 
 main().catch((error) => {
