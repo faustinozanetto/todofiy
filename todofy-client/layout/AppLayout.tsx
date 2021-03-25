@@ -1,16 +1,17 @@
 import React, { ReactNode } from 'react';
+import { Box } from '@chakra-ui/react';
 import { Footer } from '../components/footer';
 import { Navbar } from '../components/navbar';
 
-interface AppLayoutProps {
+interface IAppLayout {
   children: ReactNode;
 }
 
-export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
+export const AppLayout: React.FC<IAppLayout> = ({ children }) => {
   return (
     <>
       <Navbar />
-      <div>{children}</div>
+      <Box my={8}>{children}</Box>
       <Footer />
     </>
   );

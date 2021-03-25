@@ -1,48 +1,53 @@
 import React from 'react';
 import { Formik, FormikProps, Form } from 'formik';
 import * as Yup from 'yup';
-import { Box, Spacer, Stack } from '@chakra-ui/layout';
+import { Box, Stack } from '@chakra-ui/layout';
 import { FormField } from './FormField';
 import { Button } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 
-interface ILoginForm {}
+interface IRegisterForm {}
 
-interface ILoginFormValues {
+interface IRegisterFormValues {
   username: string;
+  email: string;
   password: string;
 }
 
 /**
- * Sign in schema input validation with Yup.
+ * Register schema input validation with Yup.
  */
-const signInSchema = Yup.object().shape({
+const registerSchema = Yup.object().shape({
   username: Yup.string()
     .required('Username is required!')
     .min(3, 'Username has to be longer than 3 characters!')
     .max(25, 'Username has to be shorter than 25 characters!'),
+  email: Yup.string()
+    .email('E-mail is not valid!')
+    .required('E-mail is required!'),
   password: Yup.string()
     .required('Password is required!')
     .min(3, 'Password has to be longer than 3 characters!')
     .max(25, 'Password has to be shorter than 25 characters!'),
 });
 
-export const LoginForm: React.FC<ILoginForm> = ({}) => {
+export const RegisterForm: React.FC<IRegisterForm> = ({}) => {
   const router = useRouter();
-  const initialValues: ILoginFormValues = {
+  const initialValues: IRegisterFormValues = {
     username: '',
+    email: '',
     password: '',
   };
   return (
     <Box>
       <Formik
         initialValues={initialValues}
-        validationSchema={signInSchema}
-        onSubmit={(values: ILoginFormValues, actions) => {
+        validationSchema={registerSchema}
+        onSubmit={(values: IRegisterFormValues, actions) => {
           console.log(values);
         }}
       >
-        {(props: FormikProps<ILoginForm>) => {
+        {(props: FormikProps<IRegisterFormValues>) => {
           const { isSubmitting } = props;
           return (
             <Form>
@@ -50,6 +55,13 @@ export const LoginForm: React.FC<ILoginForm> = ({}) => {
                 name='username'
                 label='Username'
                 placeholder='Username'
+                type='text'
+                isRequired
+              />
+              <FormField
+                name='email'
+                label='Email'
+                placeholder='Email'
                 type='text'
                 isRequired
               />
@@ -67,21 +79,11 @@ export const LoginForm: React.FC<ILoginForm> = ({}) => {
               >
                 <Button
                   colorScheme='teal'
-                  width='100%'
-                  onClick={() => {
-                    router.push('/user/forgot-password');
-                  }}
-                >
-                  Forgot Password?
-                </Button>
-                <Spacer />
-                <Button
-                  colorScheme='teal'
                   type='submit'
                   width='100%'
                   isLoading={isSubmitting}
                 >
-                  Login
+                  Register
                 </Button>
               </Stack>
             </Form>

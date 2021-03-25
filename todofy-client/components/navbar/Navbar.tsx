@@ -1,43 +1,104 @@
 import React from 'react';
 import {
+  Box,
   Flex,
-  useBreakpointValue,
+  Container,
   useColorModeValue,
   useDisclosure,
+  HStack,
+  Button,
+  Spacer,
 } from '@chakra-ui/react';
-import { NavbarLink } from '.';
+import { NavbarLink, ThemeTogglerButton } from '.';
 import { NavbarLogo } from './NavbarLogo';
-import { Container } from 'next/app';
 import { NavbarHamburgerButton } from './NavbarHamburgerButton';
+import { NAVBAR_LINKS } from '../../data';
+import { useRouter } from 'next/router';
 
 interface NavbarProps {}
 
 export const Navbar: React.FC<NavbarProps> = ({}) => {
-  const { isOpen, onToggle } = useDisclosure();
+  const {
+    isOpen: hamburgerIsOpen,
+    onToggle: hamburgerOnToggle,
+  } = useDisclosure();
+  const router = useRouter();
   return (
-    <Flex
-      as='header'
-      height='80px'
-      width='full'
-      top='0'
-      boxShadow='md'
-      bg={useColorModeValue('white', 'gray.800')}
-      color={useColorModeValue('gray.600', 'white')}
-    >
-      <Container as={Flex} maxWidth='5xl' align='center'>
-        {/* Hamburger Button */}
-        <Flex
-          display={{ base: 'flex', md: 'none' }}
-          flex={{ base: 0, md: 'auto' }}
-        >
-          <NavbarHamburgerButton onToggle={onToggle} isOpen={isOpen} />
-        </Flex>
+    <Box>
+      <Flex
+        as='header'
+        height='80px'
+        width='full'
+        top='0'
+        boxShadow='md'
+        justifyContent='center'
+        backgroundColor={useColorModeValue('white', 'gray.800')}
+      >
+        <Container as={Flex} maxW='5xl' align='center'>
+          {/* Hamburger Button */}
+          <Flex display={['flex', 'flex', 'none', 'none', 'none']}>
+            <NavbarHamburgerButton
+              onToggle={hamburgerOnToggle}
+              isOpen={hamburgerIsOpen}
+            />
+          </Flex>
 
-        {/* Logo */}
-        <Flex>
-          <NavbarLogo />
-        </Flex>
-      </Container>
-    </Flex>
+          {/* Logo */}
+          <Flex
+            flex={[1, 1, 0, 0, 0]}
+            alignItems='center'
+            justifyContent='center'
+            mr={[0, 0, 8, 8, 8]}
+          >
+            <NavbarLogo />
+          </Flex>
+
+          {/* Links */}
+          <Flex flex={1} display={['none', 'none', 'flex']}>
+            <HStack spacing={4} alignContent='center' justifyContent='center'>
+              {NAVBAR_LINKS.map((link, index) => {
+                return (
+                  <NavbarLink
+                    key={index}
+                    label={link.label}
+                    href={link.href}
+                    tooltip={link.tooltip}
+                  />
+                );
+              })}
+            </HStack>
+          </Flex>
+
+          {/* User buttons */}
+          <Flex display={['none', 'none', 'flex']} mr={[0, 0, 4]}>
+            <HStack>
+              <Button
+                variant='outline'
+                colorScheme='teal'
+                onClick={() => {
+                  router.push('/user/sign-in');
+                }}
+              >
+                Sign In
+              </Button>
+              <Button
+                variant='outline'
+                colorScheme='teal'
+                onClick={() => {
+                  router.push('/user/sign-up');
+                }}
+              >
+                Sign Up
+              </Button>
+            </HStack>
+          </Flex>
+
+          {/* Theme Toggle Button */}
+          <Flex>
+            <ThemeTogglerButton />
+          </Flex>
+        </Container>
+      </Flex>
+    </Box>
   );
 };

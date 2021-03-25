@@ -1,18 +1,30 @@
 import React from 'react';
+import { Box, Tooltip, Link, useColorModeValue } from '@chakra-ui/react';
 
-interface NavbarLinkProps {
+export interface INavbarLink {
   label: string;
   href: string;
+  tooltip: string;
 }
 
-export const NavbarLink: React.FC<NavbarLinkProps> = ({ label, href }) => {
+export const NavbarLink: React.FC<INavbarLink> = ({ label, href, tooltip }) => {
   return (
     <>
-      <a href={href}>
-        <h2 className='text-base font-medium text-gray-500 hover:text-gray-900'>
-          {label}
-        </h2>
-      </a>
+      <Box>
+        <Tooltip label={tooltip} aria-label={tooltip}>
+          <Link
+            fontWeight={500}
+            color={useColorModeValue('gray.600', 'gray.200')}
+            href={href}
+            _hover={{
+              textDecoration: 'none',
+              fontWeight: '600',
+            }}
+          >
+            {label}
+          </Link>
+        </Tooltip>
+      </Box>
     </>
   );
 };
