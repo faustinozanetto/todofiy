@@ -1,15 +1,16 @@
 import 'reflect-metadata';
 import cors from 'cors';
 import express from 'express';
+import session from 'express-session';
 import { ApolloServer } from 'apollo-server-express';
 import { buildSchema } from 'type-graphql';
-import { TestResolver } from './resolvers/index';
+import { TestResolver, UserResolver } from './resolvers/index';
 import { Logger, LogLevel } from './logger/index';
 import { databaseOptions } from './database/index';
 import { createConnection } from 'typeorm';
-import { __port__, __prod__ } from './utils/constants';
+import { __cookie__, __port__, __prod__, __secret__ } from './utils/constants';
 
-const logger = new Logger('Todofy | ');
+export const logger = new Logger('Todofy | ');
 
 const main = async () => {
   const options = await databaseOptions();
@@ -21,6 +22,15 @@ const main = async () => {
   );
 
   const app = express();
+
+  app.use(express.json());
+
+  app.use(
+    express.urlencoded({
+      extended: true,
+    })
+  );
+  // Express cors middleware
   app.use(
     cors({
       origin: __prod__ ? '' : 'http://localhost:3000',
@@ -28,9 +38,25 @@ const main = async () => {
     })
   );
 
+  // Express session middleware
+  app.use(
+    session({
+      name: __cookie__,
+      secret: __secret__,
+      cookie: {
+        maxAge: 1000 * 60 * 60 * 24 * 365 * 10, // 10 years
+        httpOnly: true,
+        sameSite: 'lax',
+        secure: __prod__, // cookie only works in https
+      },
+      saveUninitialized: false,
+      resave: false,
+    })
+  );
+
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
-      resolvers: [TestResolver],
+      resolvers: [TestResolver, UserResolver],
       validate: false,
     }),
     introspection: true,

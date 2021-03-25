@@ -21,8 +21,8 @@
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
     "resolveJsonModule": true,
-    "baseUrl": "./src"
+    "baseUrl": "src"
   },
   "exclude": ["node_modules"],
-  "include": ["./**/*.tsx", "./**/*.ts"]
+  "include": ["src", "./**/*.tsx", "./**/*.ts", "passportConfig.js"]
 }

@@ -27,27 +27,27 @@ export class Logger {
    * @param logLevel LogLevel enum.
    * @param message Message to print to the console.
    */
-  public log(logLevel: LogLevel, message: string): void {
+  public log(logLevel: LogLevel, message: any): void {
     try {
       switch (logLevel) {
         case LogLevel.INFO:
-          console.log(this.getPrefix() + this.getLevel(logLevel) + message);
+          console.log(this.getPrefix() + this.getLevel(logLevel), message);
           break;
 
         case LogLevel.DEBUG:
-          console.debug(this.getPrefix() + this.getLevel(logLevel) + message);
+          console.debug(this.getPrefix() + this.getLevel(logLevel), message);
           break;
 
         case LogLevel.WARNING:
-          console.warn(this.getPrefix() + this.getLevel(logLevel) + message);
+          console.warn(this.getPrefix() + this.getLevel(logLevel), message);
           break;
 
         case LogLevel.ERROR:
-          console.error(this.getPrefix() + this.getLevel(logLevel) + message);
+          console.error(this.getPrefix() + this.getLevel(logLevel), message);
           break;
 
         default:
-          console.log(this.getPrefix() + this.getLevel(logLevel) + message);
+          console.log(this.getPrefix() + this.getLevel(logLevel), message);
           break;
       }
     } catch (error) {
