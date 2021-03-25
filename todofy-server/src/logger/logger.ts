@@ -1,4 +1,4 @@
-import { LogLevel } from '.';
+import { LogLevel } from './logLevel';
 
 export class Logger {
   private prefix: string;

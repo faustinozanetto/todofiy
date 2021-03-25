@@ -1,12 +1,21 @@
 import React from 'react';
-import type { AppProps /*, AppContext */ } from 'next/app';
-import '../styles/tailwind.css';
+import { ChakraProvider, CSSReset } from '@chakra-ui/react';
+import type { AppProps } from 'next/app';
+import { theme } from '../styles';
+import NProgress from 'nprogress';
+import { Router } from 'next/router';
+
+// NProgress event binds
+Router.events.on('routeChangeStart', () => NProgress.start());
+Router.events.on('routeChangeComplete', () => NProgress.done());
+Router.events.on('routeChangeError', () => NProgress.done());
 
 const App = ({ Component, pageProps }: AppProps) => {
   return (
-    <>
+    <ChakraProvider theme={theme}>
+      <CSSReset />
       <Component {...pageProps} />
-    </>
+    </ChakraProvider>
   );
 };
 

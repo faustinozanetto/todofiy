@@ -3,11 +3,11 @@ import cors from 'cors';
 import express from 'express';
 import { ApolloServer } from 'apollo-server-express';
 import { buildSchema } from 'type-graphql';
-import { TestResolver } from './resolvers';
-import { Logger, LogLevel } from './logger';
-import { __port__, __prod__ } from './utils/constants';
-import { databaseOptions } from './database';
+import { TestResolver } from './resolvers/index';
+import { Logger, LogLevel } from './logger/index';
+import { databaseOptions } from './database/index';
 import { createConnection } from 'typeorm';
+import { __port__, __prod__ } from './utils/constants';
 
 const logger = new Logger('Todofy | ');
 
@@ -43,7 +43,7 @@ const main = async () => {
     cors: false,
   });
 
-  app.listen(__prod__ ? __port__ : 5000, () => {
+  app.listen(__port__, () => {
     logger.log(
       LogLevel.INFO,
       'Successfully started Todofy Server on port ' + __port__

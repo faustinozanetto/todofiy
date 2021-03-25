@@ -1,5 +1,6 @@
-import { __prod__ } from '../utils/constants';
 import { ConnectionOptions } from 'typeorm';
+import { Todo, User } from '../entities/index';
+import { __prod__ } from '../utils/constants';
 
 /**
  *
@@ -16,6 +17,7 @@ export const databaseOptions = async () => {
     logging: true,
     synchronize: true,
     database: 'todofy',
+    entities: [Todo, User],
   };
 
   return connOptions;
