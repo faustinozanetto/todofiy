@@ -1,5 +1,5 @@
 import { ObjectType, Field } from 'type-graphql';
-import { User } from '../entities';
+import { User } from '../../entities';
 import { FieldError } from '.';
 
 /**

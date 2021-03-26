@@ -13,6 +13,9 @@ import { NavbarLogo } from './NavbarLogo';
 import { NavbarHamburgerButton } from './NavbarHamburgerButton';
 import { NAVBAR_LINKS } from '../../data';
 import { useRouter } from 'next/router';
+import { __isServer__ } from '../../utils/constants';
+import { useMeQuery } from '../../generated/graphql';
+import { UserDetailsMenu } from '../user';
 
 interface NavbarProps {}
 
@@ -22,6 +25,9 @@ export const Navbar: React.FC<NavbarProps> = ({}) => {
     onToggle: hamburgerOnToggle,
   } = useDisclosure();
   const router = useRouter();
+  const { data: userData } = useMeQuery({
+    skip: __isServer__,
+  });
   return (
     <Box>
       <Flex
@@ -70,26 +76,30 @@ export const Navbar: React.FC<NavbarProps> = ({}) => {
 
           {/* User buttons */}
           <Flex display={['none', 'none', 'flex']} mr={[0, 0, 4]}>
-            <HStack>
-              <Button
-                variant='outline'
-                colorScheme='teal'
-                onClick={() => {
-                  router.push('/user/login');
-                }}
-              >
-                Sign In
-              </Button>
-              <Button
-                variant='outline'
-                colorScheme='teal'
-                onClick={() => {
-                  router.push('/user/register');
-                }}
-              >
-                Sign Up
-              </Button>
-            </HStack>
+            {!userData?.me ? (
+              <HStack>
+                <Button
+                  variant='outline'
+                  colorScheme='teal'
+                  onClick={() => {
+                    router.push('/user/login');
+                  }}
+                >
+                  Sign In
+                </Button>
+                <Button
+                  variant='outline'
+                  colorScheme='teal'
+                  onClick={() => {
+                    router.push('/user/register');
+                  }}
+                >
+                  Sign Up
+                </Button>
+              </HStack>
+            ) : (
+              <UserDetailsMenu userData={userData} />
+            )}
           </Flex>
 
           {/* Theme Toggle Button */}

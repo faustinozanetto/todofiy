@@ -6,7 +6,7 @@ import passport from 'passport';
 import passportMiddleware from './middlewares/passportJS';
 import { ApolloServer } from 'apollo-server-express';
 import { buildSchema } from 'type-graphql';
-import { TestResolver, UserResolver } from './resolvers/index';
+import { TestResolver, TodoResolver, UserResolver } from './resolvers/index';
 import { Logger, LogLevel } from './logger/index';
 import { databaseOptions } from './database/index';
 import { createConnection } from 'typeorm';
@@ -63,7 +63,7 @@ const main = async () => {
 
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
-      resolvers: [TestResolver, UserResolver],
+      resolvers: [TestResolver, UserResolver, TodoResolver],
       validate: false,
     }),
     introspection: true,

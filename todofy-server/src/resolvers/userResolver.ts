@@ -1,6 +1,6 @@
-import { Arg, Ctx, Mutation, Query, Resolver } from 'type-graphql';
-import { UsersResponse, UserResponse } from '../responses';
-import { getConnection } from 'typeorm';
+import { Arg, Ctx, Int, Mutation, Query, Resolver } from 'type-graphql';
+import { UsersResponse, UserResponse } from '../responses/user';
+import { getConnection, getRepository } from 'typeorm';
 import { TodofyContext } from 'types';
 import { User } from '../entities';
 import { validateUserRegistration } from '../utils';
@@ -9,15 +9,16 @@ import argon2 from 'argon2';
 import { logger } from '../index';
 import { LogLevel } from '../logger';
 import { __cookie__, __secret__ } from '../utils/constants';
+import { TodosResponse } from '../responses/todo/Todos';
 
 @Resolver()
 export class UserResolver {
   @Query(() => UsersResponse)
   async getUsers(): Promise<UsersResponse> {
-    const foundUsers = await User.find();
-    if (foundUsers) {
+    const users = await User.find();
+    if (users) {
       return {
-        foundUsers,
+        users,
       };
     }
 
@@ -151,5 +152,28 @@ export class UserResolver {
       return null;
     }
     return User.findOne(userId);
+  }
+
+  /**
+   *
+   * @param param0
+   */
+  @Query(() => TodosResponse)
+  async userTodos(@Arg('id', () => Int) id: number): Promise<TodosResponse> {
+    const user = await getRepository(User).findOne(id, {
+      relations: ['todos'],
+    });
+
+    if (!user) {
+      return {
+        errors: [
+          { field: 'user', message: 'Could not found user with that ID!' },
+        ],
+      };
+    }
+
+    return {
+      todos: user.todos,
+    };
   }
 }

@@ -2,14 +2,14 @@ import React from 'react';
 import { Text, useColorModeValue } from '@chakra-ui/react';
 import styled from 'styled-components';
 
-const Logo = styled.a`
+const StyledLogo = styled.a`
   background: linear-gradient(90deg, #66f, #09f, #00ff9d, #f39, #66f);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
   animation: rainbow_animation 6s ease-in-out infinite;
   background-size: 400% 100%;
-  
+
   @keyframes rainbow_animation {
     0%,
     to {
@@ -25,7 +25,7 @@ const Logo = styled.a`
 export const NavbarLogo: React.FC<{}> = ({}) => {
   return (
     <>
-      <Text as={Logo} fontSize='4xl' fontWeight='bold'>
+      <Text as={StyledLogo} fontSize='4xl' fontWeight='bold'>
         Todofy
       </Text>
     </>

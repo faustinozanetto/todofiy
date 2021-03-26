@@ -1,5 +1,14 @@
 import { Field, ObjectType } from 'type-graphql';
-import { BaseEntity, Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import {
+  BaseEntity,
+  Column,
+  CreateDateColumn,
+  Entity,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
+import { User } from '../entities';
 
 @ObjectType()
 @Entity({ name: 'todos' })
@@ -15,6 +24,9 @@ export class Todo extends BaseEntity {
   @Field()
   @Column({ nullable: false })
   completed!: boolean;
+
+  @ManyToOne(() => User, (user: User) => user.todos)
+  user: User;
 
   @Field(() => String)
   @CreateDateColumn()

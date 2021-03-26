@@ -1,6 +1,6 @@
 import { ObjectType, Field } from 'type-graphql';
-import { User } from '../entities';
-import { FieldError } from './';
+import { User } from '../../entities';
+import { FieldError } from '../FieldError';
 
 /**
  * Response used when running the getUsers Query.
@@ -14,5 +14,5 @@ export class UsersResponse {
   errors?: FieldError[];
 
   @Field(() => [User], { nullable: true })
-  foundUsers?: User[];
+  users?: User[];
 }
