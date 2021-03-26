@@ -3,8 +3,10 @@ import { Formik, FormikProps, Form } from 'formik';
 import * as Yup from 'yup';
 import { Box, Spacer, Stack } from '@chakra-ui/layout';
 import { FormField } from './FormField';
-import { Button } from '@chakra-ui/react';
+import { Button, useToast } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
+import { toErrorMap } from '../../utils';
+import { useLoginMutation, MeQuery, MeDocument } from '../../generated/graphql';
 
 interface ILoginForm {}
 
@@ -28,18 +30,54 @@ const signInSchema = Yup.object().shape({
 });
 
 export const LoginForm: React.FC<ILoginForm> = ({}) => {
+  const [login] = useLoginMutation();
   const router = useRouter();
   const initialValues: ILoginFormValues = {
     username: '',
     password: '',
   };
+  const toast = useToast();
   return (
     <Box>
       <Formik
         initialValues={initialValues}
         validationSchema={signInSchema}
-        onSubmit={(values: ILoginFormValues, actions) => {
-          console.log(values);
+        onSubmit={async (values, { setErrors }) => {
+          const response = await login({
+            variables: values,
+            update: (cache, { data }) => {
+              cache.writeQuery<MeQuery>({
+                query: MeDocument,
+                data: {
+                  __typename: 'Query',
+                  me: data?.login.user,
+                },
+              });
+            },
+          });
+          const errors = response.data?.login.errors;
+          if (errors) {
+            setErrors(toErrorMap(errors));
+            toast({
+              title: 'An error occurred',
+              description: errors[0].message,
+              status: 'error',
+              duration: 1500,
+              isClosable: true,
+            });
+          } else if (response.data?.login.user) {
+            if (typeof router.query.next === 'string') {
+              router.push(router.query.next);
+            } else {
+              router.push('/');
+              toast({
+                title: 'Logged in Successfully',
+                status: 'success',
+                duration: 1500,
+                isClosable: true,
+              });
+            }
+          }
         }}
       >
         {(props: FormikProps<ILoginForm>) => {

@@ -1,8 +1,8 @@
 import React from 'react';
 import { ChakraProvider, CSSReset } from '@chakra-ui/react';
 import type { AppProps } from 'next/app';
-import { theme } from '../styles';
 import NProgress from 'nprogress';
+import { theme } from '../styles';
 import { Router } from 'next/router';
 
 // NProgress event binds

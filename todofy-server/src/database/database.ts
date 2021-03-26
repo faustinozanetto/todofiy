@@ -9,7 +9,6 @@ import { __prod__ } from '../utils/constants';
 export const databaseOptions = async () => {
   let connOptions: ConnectionOptions;
   connOptions = {
-    name: 'todofy-db',
     type: 'postgres',
     host: 'localhost',
     username: 'faust',

@@ -2,6 +2,8 @@ import 'reflect-metadata';
 import cors from 'cors';
 import express from 'express';
 import session from 'express-session';
+import passport from 'passport';
+import passportMiddleware from './middlewares/passportJS';
 import { ApolloServer } from 'apollo-server-express';
 import { buildSchema } from 'type-graphql';
 import { TestResolver, UserResolver } from './resolvers/index';
@@ -42,7 +44,7 @@ const main = async () => {
   app.use(
     session({
       name: __cookie__,
-      secret: __secret__,
+      secret: __secret__!,
       cookie: {
         maxAge: 1000 * 60 * 60 * 24 * 365 * 10, // 10 years
         httpOnly: true,
@@ -53,6 +55,11 @@ const main = async () => {
       resave: false,
     })
   );
+
+  // PassportJS middleware
+  app.use(passport.initialize());
+
+  passport.use(passportMiddleware);
 
   const apolloServer = new ApolloServer({
     schema: await buildSchema({

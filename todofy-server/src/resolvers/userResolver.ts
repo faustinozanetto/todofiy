@@ -8,6 +8,7 @@ import { UserCredentialsInput } from '../inputs';
 import argon2 from 'argon2';
 import { logger } from '../index';
 import { LogLevel } from '../logger';
+import { __cookie__, __secret__ } from '../utils/constants';
 
 @Resolver()
 export class UserResolver {
@@ -25,10 +26,16 @@ export class UserResolver {
     };
   }
 
+  /**
+   *
+   * @param input User register input
+   * @param ctx Todofy Context
+   * @returns If input is valid, return registered User
+   */
   @Mutation(() => UserResponse)
   async register(
     @Arg('input') input: UserCredentialsInput,
-    @Ctx() {}: TodofyContext
+    @Ctx() { req }: TodofyContext
   ): Promise<UserResponse> {
     const errors = validateUserRegistration(input);
     if (errors) {
@@ -39,7 +46,7 @@ export class UserResolver {
     const hashedPassword = await argon2.hash(input.password);
     let user;
     try {
-      const result = await getConnection('todofy-db')
+      const result = await getConnection()
         .createQueryBuilder()
         .insert()
         .into(User)
@@ -67,6 +74,82 @@ export class UserResolver {
         };
       }
     }
+
+    req.session.userId = user.id;
+
     return { user };
+  }
+
+  /**
+   *
+   * @param username The username of the user
+   * @param password The password of the user
+   * @param ctx Todofy Context
+   * @returns If credentials are correct, return the User
+   */
+  @Mutation(() => UserResponse)
+  async login(
+    @Arg('username') username: string,
+    @Arg('password') password: string,
+    @Ctx() { req }: TodofyContext
+  ): Promise<UserResponse> {
+    const user = await User.findOne({ where: { username } });
+
+    // Username does not exist.
+    if (!user) {
+      return {
+        errors: [
+          {
+            field: 'username',
+            message: 'That username does not exists!',
+          },
+        ],
+      };
+    }
+
+    // De-hashing password
+    const validPassword = await argon2.verify(user.password, password);
+    if (!validPassword) {
+      return {
+        errors: [{ field: 'password', message: 'Password does not match!' }],
+      };
+    }
+
+    req.session.userId = user.id;
+
+    return { user };
+  }
+
+  /**
+   *
+   * @param ctx Todofy Context
+   * @returns True or False wether logout was successful or not.
+   */
+  @Mutation(() => Boolean)
+  async logout(@Ctx() { req, res }: TodofyContext) {
+    return new Promise<boolean>((resolve) => {
+      req.session.destroy((error: any) => {
+        res.clearCookie(__cookie__);
+        if (error) {
+          logger.log(LogLevel.ERROR, error);
+          resolve(error);
+          return;
+        }
+        resolve(true);
+      });
+    });
+  }
+
+  /**
+   * @param ctx Todofy Context
+   * @returns Current user logged in the page.
+   */
+  @Query(() => User, { nullable: true })
+  async me(@Ctx() { req }: TodofyContext) {
+    const userId = req.session.userId;
+    if (!userId) {
+      return null;
+    }
+    return User.findOne(userId);
   }
 }

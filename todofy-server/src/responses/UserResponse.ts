@@ -8,11 +8,14 @@ import { FieldError } from '.';
 @ObjectType()
 export class UserResponse {
   /**
-   * Error variable when something has gone wrong.
+   * Error
    */
   @Field(() => [FieldError], { nullable: true })
   errors?: FieldError[];
 
+  /**
+   * User
+   */
   @Field(() => User, { nullable: true })
   user?: User;
 }

@@ -8,11 +8,12 @@ import {
   Stack,
   useColorModeValue,
 } from '@chakra-ui/react';
-import { LoginForm } from '../../components/forms/LoginForm';
+import { RegisterForm } from '../../components/forms/RegisterForm';
+import { withApollo } from '../../utils/apollo/withApollo';
 
-interface ILogin {}
+interface IRegister {}
 
-const LoginPage: React.FC<ILogin> = ({}) => {
+const RegisterPage: React.FC<IRegister> = ({}) => {
   return (
     <AppLayout>
       <Box d='flex' flexDir='column' alignContent='center'>
@@ -35,17 +36,7 @@ const LoginPage: React.FC<ILogin> = ({}) => {
             fontWeight='medium'
           >
             <Stack direction={['column', 'row']}>
-              <Text>Don't have an account?</Text>
-              <Box
-                as='a'
-                marginStart='1'
-                href='/user/sign-up'
-                color={useColorModeValue('blue.600', 'blue.200')}
-                fontWeight='medium'
-                _hover={{ color: 'blue.600' }}
-              >
-                Register One!
-              </Box>
+              <Text>Start your journey with Todofy</Text>
             </Stack>
           </Text>
         </VStack>
@@ -58,11 +49,11 @@ const LoginPage: React.FC<ILogin> = ({}) => {
           p={4}
           rounded='lg'
         >
-          <LoginForm />
+          <RegisterForm />
         </Box>
       </Box>
     </AppLayout>
   );
 };
 
-export default LoginPage;
+export default withApollo({ ssr: false })(RegisterPage);

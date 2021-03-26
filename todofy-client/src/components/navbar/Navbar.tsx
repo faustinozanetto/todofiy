@@ -7,7 +7,6 @@ import {
   useDisclosure,
   HStack,
   Button,
-  Spacer,
 } from '@chakra-ui/react';
 import { NavbarLink, ThemeTogglerButton } from '.';
 import { NavbarLogo } from './NavbarLogo';
@@ -76,7 +75,7 @@ export const Navbar: React.FC<NavbarProps> = ({}) => {
                 variant='outline'
                 colorScheme='teal'
                 onClick={() => {
-                  router.push('/user/sign-in');
+                  router.push('/user/login');
                 }}
               >
                 Sign In
@@ -85,7 +84,7 @@ export const Navbar: React.FC<NavbarProps> = ({}) => {
                 variant='outline'
                 colorScheme='teal'
                 onClick={() => {
-                  router.push('/user/sign-up');
+                  router.push('/user/register');
                 }}
               >
                 Sign Up

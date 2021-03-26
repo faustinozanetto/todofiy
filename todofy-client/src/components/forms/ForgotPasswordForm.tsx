@@ -6,18 +6,18 @@ import { FormField } from './FormField';
 import { Button } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 
-interface IRegisterForm {}
+interface IForgotPasswordForm {}
 
-interface IRegisterFormValues {
+interface IForgotPasswordFormValues {
   username: string;
   email: string;
-  password: string;
+  newPassword: string;
 }
 
 /**
- * Register schema input validation with Yup.
+ * Forgot password schema input validation with Yup.
  */
-const registerSchema = Yup.object().shape({
+const signInSchema = Yup.object().shape({
   username: Yup.string()
     .required('Username is required!')
     .min(3, 'Username has to be longer than 3 characters!')
@@ -25,29 +25,29 @@ const registerSchema = Yup.object().shape({
   email: Yup.string()
     .email('E-mail is not valid!')
     .required('E-mail is required!'),
-  password: Yup.string()
+  newPassword: Yup.string()
     .required('Password is required!')
     .min(3, 'Password has to be longer than 3 characters!')
     .max(25, 'Password has to be shorter than 25 characters!'),
 });
 
-export const RegisterForm: React.FC<IRegisterForm> = ({}) => {
+export const ForgotPasswordForm: React.FC<IForgotPasswordForm> = ({}) => {
   const router = useRouter();
-  const initialValues: IRegisterFormValues = {
+  const initialValues: IForgotPasswordFormValues = {
     username: '',
     email: '',
-    password: '',
+    newPassword: '',
   };
   return (
     <Box>
       <Formik
         initialValues={initialValues}
-        validationSchema={registerSchema}
-        onSubmit={(values: IRegisterFormValues, actions) => {
+        validationSchema={signInSchema}
+        onSubmit={(values: IForgotPasswordFormValues, actions) => {
           console.log(values);
         }}
       >
-        {(props: FormikProps<IRegisterFormValues>) => {
+        {(props: FormikProps<IForgotPasswordForm>) => {
           const { isSubmitting } = props;
           return (
             <Form>
@@ -66,9 +66,9 @@ export const RegisterForm: React.FC<IRegisterForm> = ({}) => {
                 isRequired
               />
               <FormField
-                name='password'
-                label='Password'
-                placeholder='Password'
+                name='newPassword'
+                label='New Password'
+                placeholder='New Password'
                 type='password'
                 isRequired
               />
@@ -83,7 +83,7 @@ export const RegisterForm: React.FC<IRegisterForm> = ({}) => {
                   width='100%'
                   isLoading={isSubmitting}
                 >
-                  Register
+                  Change Password
                 </Button>
               </Stack>
             </Form>

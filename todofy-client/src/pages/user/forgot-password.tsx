@@ -8,11 +8,12 @@ import {
   Stack,
   useColorModeValue,
 } from '@chakra-ui/react';
-import { RegisterForm } from '../../components/forms/RegisterForm';
+import { ForgotPasswordForm } from '../../components/forms';
+import { withApollo } from '../../utils/apollo/withApollo';
 
-interface IRegister {}
+interface IForgotPassword {}
 
-const RegisterPage: React.FC<IRegister> = ({}) => {
+const ForgotPasswordPage: React.FC<IForgotPassword> = ({}) => {
   return (
     <AppLayout>
       <Box d='flex' flexDir='column' alignContent='center'>
@@ -35,7 +36,7 @@ const RegisterPage: React.FC<IRegister> = ({}) => {
             fontWeight='medium'
           >
             <Stack direction={['column', 'row']}>
-              <Text>Start your journey with Todofy</Text>
+              <Text>Password reset </Text>
             </Stack>
           </Text>
         </VStack>
@@ -48,11 +49,11 @@ const RegisterPage: React.FC<IRegister> = ({}) => {
           p={4}
           rounded='lg'
         >
-          <RegisterForm />
+          <ForgotPasswordForm />
         </Box>
       </Box>
     </AppLayout>
   );
 };
 
-export default RegisterPage;
+export default withApollo({ ssr: false })(ForgotPasswordPage);

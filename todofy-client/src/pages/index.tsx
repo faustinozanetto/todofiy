@@ -1,8 +1,9 @@
 import React from 'react';
 import { SEO } from '../components/seo';
 import { AppLayout } from '../layout';
+import { withApollo } from '../utils/apollo/withApollo';
 
-export default function Home() {
+const Home = () => {
   return (
     <AppLayout>
       <SEO
@@ -11,4 +12,7 @@ export default function Home() {
       />
     </AppLayout>
   );
-}
+};
+
+
+export default withApollo({ ssr: true })(Home);
